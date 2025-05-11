@@ -1,4 +1,6 @@
+"use client";
 import React from 'react';
+import { signIn } from 'next-auth/react';
 
 const SignupPage = () => {
   return (
@@ -11,6 +13,10 @@ const SignupPage = () => {
         <input type="password" /><br />
         <button type="submit">Sign Up</button>
       </form>
+      <button onClick={() => {
+        console.log("Signing in with Google");
+        signIn('google');
+      }}>Sign in with Google</button>
     </div>
   );
 };
