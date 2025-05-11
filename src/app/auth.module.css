@@ -1,0 +1,30 @@
+/* filepath: src/app/auth.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh; /* Make it at least half the viewport height */
+  padding: 20px;
+}
+
+.button {
+  background-color: #4285f4; /* Google blue */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #357ae8; /* Darker Google blue */
+}
+
+.heading {
+  margin-bottom: 20px;
+  text-align: center;
+}
