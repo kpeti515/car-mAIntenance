@@ -22,7 +22,7 @@ export const authOptions = {
     },
   },
   // Optional SQL or MongoDB database to persist users
-  // database: process.env.DATABASE_URL
+  database: process.env.DATABASE_URL
 }
 
 const handler = NextAuth(authOptions);
