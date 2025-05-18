@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/authOptions';
 import { AppDataSource } from '@/data-source';
 import { Car } from '@/entities/Car';
+import { getServerSession } from 'next-auth/next'; // Import getServerSession
+import { authOptions } from '../auth/authOptions'; // Import authOptions
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions); // Get user session
   if (!session || !session.user || !session.user.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -39,6 +39,31 @@ export async function POST(req: NextRequest) {
   } catch (err: unknown) {
     console.error('Error in /api/cars POST:', err);
     let message = 'Failed to add car';
+    if (err && typeof err === 'object' && err && 'message' in err) {
+      message = (err as { message?: string }).message || message;
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions); // Get user session
+  if (!session || !session.user || !session.user.email) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+    }
+    const carRepo = AppDataSource.getRepository(Car);
+    const cars = await carRepo.find({
+      where: { user_id: session.user.email },
+    });
+    return NextResponse.json(cars, { status: 200 });
+  } catch (err: unknown) {
+    console.error('Error in /api/cars GET:', err);
+    let message = 'Failed to fetch cars';
     if (err && typeof err === 'object' && err && 'message' in err) {
       message = (err as { message?: string }).message || message;
     }

@@ -94,18 +94,87 @@ a.secondary {
 
 .footer {
   grid-row-start: 3;
-  display: flex;
-  gap: 24px;
+  display: flex; /* Keep flex to center content */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  gap: 0; /* Remove gap */
+  padding: 1rem 0; /* Adjust padding */
+  background-color: transparent; /* Remove background color */
+  border-top: none; /* Remove top border */
+  color: var(--foreground); /* Set text color */
+  font-size: 0.9rem; /* Adjust font size */
 }
 
-.footer a {
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Space out left and right sections */
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--gray-alpha-100); /* Example background */
+  border-bottom: 1px solid var(--gray-alpha-200); /* Example border */
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center; /* Align items vertically in nav */
+}
+
+.navLeft {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
-.footer img {
-  flex-shrink: 0;
+.navRight {
+  display: flex;
+  align-items: center;
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--foreground);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.navLink:hover {
+  background-color: var(--gray-alpha-200);
+}
+
+.profileNav {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Space between profile and nav links */
+}
+
+.carList {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.carCard {
+  border: 1px solid var(--gray-alpha-200);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.carCard:hover {
+  border-color: var(--foreground);
+  box-shadow: 0 4px 8px rgba(var(--gray-rgb), 0.1);
+}
+
+.carCard h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.carCard p {
+  margin: 0;
+  color: #555;
 }
 
 /* Enable hover only on non-touch devices */
