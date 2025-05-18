@@ -3,16 +3,21 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import styles from "./page.module.css";
-import Profile from "../components/Profile";
+import Profile from "@/components/Profile";
+import CarForm from "@/components/CarForm";
+
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <h1>Welcome to Car Maintainer App</h1>
         {status === "authenticated" ? (
-          <Profile />
+          <>
+            <Profile />
+            <CarForm />
+          </>
         ) : (
           <div className={styles.ctas}>
             <a href="/login" className={styles.primary}>Login</a>

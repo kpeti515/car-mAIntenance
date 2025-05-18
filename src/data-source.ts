@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { DataSource, DataSourceOptions } from "typeorm";
+import { Car } from "./entities/Car";
 
 // Ensure environment variables are loaded. For Next.js, this happens automatically.
 // For standalone TypeORM CLI usage, you might need to load .env files explicitly
@@ -19,8 +20,8 @@ const getDataSourceOptions = (): DataSourceOptions => {
     url: connectionString,
     synchronize: false, // Never use TRUE in production!
     logging: process.env.NODE_ENV === "development" ? ["query", "error"] : ["error"], // Log queries in dev
-    entities: ["src/entities/**/*.{js,ts}"],
-    migrations: ["src/migrations/**/*.{js,ts}"],
+    entities: [Car],
+    migrations: [],
     subscribers: [],
     ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
     // For Vercel Postgres and many other cloud providers, rejectUnauthorized: false is common.

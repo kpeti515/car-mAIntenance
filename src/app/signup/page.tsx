@@ -14,9 +14,6 @@ const SignupPage = () => {
     }
   }, [status, router]);
 
-  const handleGoogleSignIn = async () => {
-    signIn('google', { callbackUrl: '/' });
-  };
 
   return (
     <div className={styles.container}> {/* Use the container class */}
