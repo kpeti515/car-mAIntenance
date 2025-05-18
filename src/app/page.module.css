@@ -6,14 +6,12 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
 
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Stack children vertically */
   align-items: center;
   justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
   font-family: var(--font-geist-sans);
+  min-height: calc(100vh - 40px - 2rem);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,7 +29,10 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  grid-row-start: 2;
+  width: 100%; /* Ensure main content takes full width */
+  max-width: 1200px; /* Optional: set a max-width for content */
+  padding: 0 20px; /* Optional: add some horizontal padding */
+  flex-grow: 1; /* Allow main content to grow and fill available space */
 }
 
 .main ol {
@@ -93,7 +94,7 @@ a.secondary {
 }
 
 .footer {
-  grid-row-start: 3;
+  width: 100%; /* Ensure footer takes full width */
   display: flex; /* Keep flex to center content */
   justify-content: center; /* Center content horizontally */
   align-items: center; /* Center content vertically */

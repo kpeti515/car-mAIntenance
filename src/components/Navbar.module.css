@@ -1,0 +1,43 @@
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Space out left and right sections */
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1a1a1a; /* Darker background color */
+  border-bottom: 1px solid var(--gray-alpha-200); /* Example border */
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center; /* Align items vertically in nav */
+}
+
+.navLeft {
+  display: flex;
+  align-items: center;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--foreground);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.navLink:hover {
+  background-color: var(--gray-alpha-200);
+}
+
+.profileNav {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Space between profile and nav links */
+}

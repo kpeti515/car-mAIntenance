@@ -63,6 +63,12 @@ export class Car {
   @UpdateDateColumn()
   updated_at!: Date;
 
+  @Column({ type: "timestamp", nullable: true })
+  lastAccessedAt!: Date | null;
+
+  @Column({ type: "boolean", default: false })
+  isDefault!: boolean;
+
   // Example of a relationship (uncomment and define MaintenanceLog entity later)
   // @OneToMany(() => MaintenanceLog, (log) => log.car)
   // maintenance_logs: MaintenanceLog[];

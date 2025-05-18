@@ -1,94 +1,98 @@
 "use client";
 
+import { useState, useEffect } from "react"; // Import useState and useEffect
 import { useSession } from "next-auth/react";
-import Image from "next/image";
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import styles from "./page.module.css";
-import Profile from "@/components/Profile";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+
+// Define a type for car data
+interface Car {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  lastAccessedAt?: string; // Add lastAccessedAt property
+  isDefault?: boolean; // Add isDefault property
+  // Add other car properties as needed
+}
 
 export default function Home() {
   const { status } = useSession();
-  const router = useRouter();
-  const [cars, setCars] = useState<any[]>([]);
-  const [loadingCars, setLoadingCars] = useState(false);
-  const [carsError, setCarsError] = useState("");
+  const [lastAccessedCar, setLastAccessedCar] = useState<Car | null>(null); // State to store the last accessed car
+  const [loading, setLoading] = useState(true); // State for loading indicator
+  const router = useRouter(); // Initialize router
 
   useEffect(() => {
     if (status === "authenticated") {
-      async function fetchCars() {
-        setLoadingCars(true);
-        setCarsError("");
+      // Fetch the last accessed car when authenticated
+      const fetchLastAccessedCar = async () => {
         try {
-          const res = await fetch("/api/cars");
-          if (!res.ok) throw new Error("Failed to fetch cars");
-          setCars(await res.json());
-        } catch (err: any) {
-          setCarsError(err.message || "Unknown error");
+          const response = await fetch("/api/cars/lastAccessed"); // Call the new endpoint
+          if (response.ok) {
+            const data: Car | null = await response.json();
+            setLastAccessedCar(data);
+          } else {
+            // Handle error fetching car
+            console.error("Failed to fetch last accessed car:", response.statusText);
+            setLastAccessedCar(null); // Set to null on error
+          }
+        } catch (error) {
+          console.error("Error fetching last accessed car:", error);
+          setLastAccessedCar(null); // Set to null on error
         } finally {
-          setLoadingCars(false);
+          setLoading(false);
         }
-      }
-      fetchCars();
+      };
+
+      fetchLastAccessedCar();
+
+    } else if (status === "unauthenticated") {
+      setLoading(false); // Not loading if unauthenticated
+      setLastAccessedCar(null); // No car for unauthenticated user
     }
-  }, [status]);
+  }, [status]); // Re-run effect when authentication status changes
+
+  const renderCarContent = () => {
+    if (loading) {
+      return <p>Loading car...</p>;
+    }
+
+    if (status === "unauthenticated") {
+      return (
+        <div className={styles.ctas}>
+          <a href="/login" className={styles.primary}>Login</a>
+          <a href="/signup" className={styles.secondary}>Sign Up</a>
+        </div>
+      );
+    }
+
+    if (!lastAccessedCar) {
+      return (
+        <div className={styles.ctas}>
+          <a href="/cars/new" className={styles.primary}>Add your first car</a>
+        </div>
+      );
+    }
+
+    // Display the last accessed car
+    return (
+      <div className={styles.carCard} onClick={() => router.push(`/cars/${lastAccessedCar.id}`)}>
+        <h2>Last Accessed Car</h2>
+        <p>Make: {lastAccessedCar.make}</p>
+        <p>Model: {lastAccessedCar.model}</p>
+        <p>Year: {lastAccessedCar.year}</p>
+        {/* Display other car details */}
+      </div>
+    );
+  };
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}> {/* Add header */}
-        <div className={styles.navLeft}> {/* Container for left side of nav */}
-          <nav className={styles.nav}> {/* Add navigation */}
-            <a href="/" className={styles.navLink}>Home</a>
-            {status === "authenticated" && (
-              <a href="/cars/new" className={styles.navLink}>Add New Vehicle</a>
-            )}
-          </nav>
-        </div>
-        {status === "authenticated" && (
-          <div className={styles.navRight}> {/* Container for right side of nav */}
-            <Profile /> {/* Include Profile component */}
-          </div>
-        )}
-      </header>
-      <main className={styles.main}> {/* Keep main for content */}
-        {status === "authenticated" ? (
-          <>
-            {/* Profile component is now in the header */}
-            {
-              loadingCars ? (
-                <p>Loading cars...</p>
-              ) : carsError ? (
-                <p style={{ color: 'red' }}>{carsError}</p>
-              ) : cars.length > 0 ? (
-                <div className={styles.carList}>
-                  <h2>Your Vehicles</h2>
-                  {cars.map(car => (
-                    <div
-                      key={car.id}
-                      className={styles.carCard}
-                      onClick={() => router.push(`/cars/${car.id}`)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <h3>{car.make} {car.model}</h3>
-                      <p>License Plate: {car.license_plate}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>No cars found. Add a new vehicle!</p>
-              )
-            }
-          </>
-        ) : status === "unauthenticated" ? (
-          <div className={styles.ctas}>
-            <a href="/login" className={styles.primary}>Login</a>
-            <a href="/signup" className={styles.secondary}>Sign Up</a>
-          </div>
-        ) : null}
+      <main className={styles.main}>
+        {renderCarContent()}
       </main>
-      <footer className={styles.footer}> {/* Update footer */}
-        <p>Car Maintainer App</p> {/* Move title to footer */}
-        {/* Remove other footer content */}
+      <footer className={styles.footer}>
+        <p>Car Maintainer App</p>
       </footer>
     </div>
   );

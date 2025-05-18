@@ -18,11 +18,17 @@ export async function GET(
       await AppDataSource.initialize();
     }
     const carRepo = AppDataSource.getRepository(Car);
-    const car = await carRepo.findOne({ where: { id: parseInt(params.id) } });
+    const carId = parseInt(params.id, 10);
+
+    const car = await carRepo.findOne({ where: { id: carId, user_id: session.user.email } }); // Add user_id to where clause
 
     if (!car) {
       return NextResponse.json({ error: 'Car not found' }, { status: 404 });
     }
+
+    // Update lastAccessedAt
+    car.lastAccessedAt = new Date();
+    await carRepo.save(car);
 
     return NextResponse.json(car, { status: 200 });
   } catch (err: unknown) {

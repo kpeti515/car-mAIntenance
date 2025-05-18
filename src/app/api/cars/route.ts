@@ -27,12 +27,20 @@ export async function POST(req: NextRequest) {
       await AppDataSource.initialize();
     }
     const carRepo = AppDataSource.getRepository(Car);
+
+    // Check if this is the user's first car
+    const existingCarsCount = await carRepo.count({
+      where: { user_id: session.user.email },
+    });
+
     const car = carRepo.create({
       ...data,
       user_id: session.user.email, // Use email as user identifier
       year: data.year ? parseInt(data.year) : null,
       initial_mileage: data.initial_mileage ? parseInt(data.initial_mileage) : null,
       purchase_date: data.purchase_date ? data.purchase_date : null,
+      isDefault: existingCarsCount === 0, // Set as default if it's the first car
+      lastAccessedAt: new Date(), // Set last accessed to now on creation
     });
     await carRepo.save(car);
     return NextResponse.json(car, { status: 201 });
@@ -59,7 +67,9 @@ export async function GET(req: NextRequest) {
     const carRepo = AppDataSource.getRepository(Car);
     const cars = await carRepo.find({
       where: { user_id: session.user.email },
+      order: { lastAccessedAt: { direction: 'DESC', nulls: 'LAST' } }, // Order by lastAccessedAt descending, with nulls last
     });
+
     return NextResponse.json(cars, { status: 200 });
   } catch (err: unknown) {
     console.error('Error in /api/cars GET:', err);

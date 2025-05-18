@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from 'next-auth/react';
 import Head from "./head"; // Import the Head component
+import Navbar from "@/components/Navbar"; // Import Navbar component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,7 @@ export default function RootLayout({
       <Head />{/* Use the Head component here */}
       <body className="bg-zinc-950 antialiased text-zinc-100">
         <SessionProvider>
+          <Navbar /> {/* Add Navbar here */}
           {children}
         </SessionProvider>
       </body>
